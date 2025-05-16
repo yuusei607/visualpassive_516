@@ -34,8 +34,8 @@ subscriber.connect(f"tcp://{ip}:{sub_port}")
 subscriber.subscribe('gaze.')
 
 # ------------------ ディスプレイ設定 ------------------
-screen_width = 3840//2
-screen_height = 2160//2
+screen_width = 3840//4
+screen_height = 2160//4
 window_width = screen_width
 window_height = screen_height
 
@@ -65,7 +65,7 @@ def new_point_with_retinal_image_invariance(u, v, X, Y, d):
     return new_u, new_v
 
 # ------------------ スムージング初期化 ------------------
-R = 0.7
+R = 0.5
 last_valid_gaze = None
 last_M = None
 last_gaze_centered = None
@@ -74,8 +74,10 @@ frame_count = 0
 
 gaze_history = deque(maxlen=5)
 # 指数移動平均用
-alpha = 0.7
+alpha = 0.85
+alpha_bad = 0.04
 gaze_avg = None  # 初期値
+size = 1.5
 
 # ------------------ メインループ ------------------
 while True:
@@ -118,6 +120,9 @@ while True:
     elif confidence > 0.3:
         gaze_avg = (1 - alpha) * gaze_avg + alpha * gaze  # 指数移動平均
         #gaze_avg = np.mean(gaze_history,axis = 0)
+    else:
+        gaze_avg = (1 - alpha_bad) * gaze_avg + alpha_bad * gaze
+
 
     gaze_screen = (screen_width * gaze_avg[0], screen_height * gaze_avg[1])
     gaze_centered = gaze_screen[0] - screen_width / 2, gaze_screen[1] - screen_height / 2
@@ -144,13 +149,13 @@ while True:
     k = screen_height_in_mm / screen_height
 
     gaze_in_mm = np.array([k * gaze_centered[0], k * gaze_centered[1], screen_distance_in_mm])
-    frame_count += 1
-    x = min(frame_count,0)
-    y = min(int(frame_count*0.25),0)
+
+    x = 0
+    y = 50
     par = np.float32([x, y])
 
     #if np.linalg.norm(gaze - gaze_avg) < 0.3:
-    if confidence > 0.6:
+    if confidence > 0.7:
         if last_gaze_centered is None or np.linalg.norm(np.array(gaze_centered) - np.array(last_gaze_centered)) > 10:
             last_gaze_centered = gaze_centered
             pts2_in_mm = np.float32([
@@ -161,11 +166,9 @@ while True:
             ])
             B = np.array([[R, 0],
                           [0, R]])
-            x_parallel = 0
-            y_parallel = 0
-            v2 = np.array([[x_parallel]*4, [y_parallel]*4])
+            
 
-            pts2_in_mm_t = B @ (pts2_in_mm.T + v2)
+            pts2_in_mm_t = B @ (pts2_in_mm.T )
             pts2_in_mm = pts2_in_mm_t.T
 
             pts2_display = []
@@ -188,6 +191,6 @@ while True:
     if key == ord('q'):
         break
 
-    time.sleep(0)
+    time.sleep(0.002)
 
 cv2.destroyAllWindows()
