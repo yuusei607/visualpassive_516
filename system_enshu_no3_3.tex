@@ -1,0 +1,34 @@
+\documentclass[dvipdfmx]{jlreq}
+\usepackage{array}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\title{システム情報工学演習第三}
+\author{学生証番号03-240614  石橋悠生}
+\date{\today}
+
+\begin{document}
+\maketitle
+\section{問1}
+\textbf{(3)}\\
+(2)の状況では消費電力が$32+8 = 40W$となっており、実行時間はプロセッサの周波数に反比例するので180秒かかる。
+したがって消費エネルギーは\[
+  40 \times 180 = 7200[J]\]となる\\
+\textbf{(4)}\\
+消費電力については(3)と同様である。一方で実行時間については、IPCが$\frac{5}{4}$倍になっているため実行時間が$\frac{4}{5}$倍になり、144秒となる。
+したがって消費電力は\[
+  40 \times 144 = 5760[J]
+\]となる。\\
+\section{問2}
+\textbf{(1)}\\
+このコードではfork()によって親プロセスと子プロセスに分岐してそれぞれを並列に実行している。\\
+まず最初に子プロセスが実行されていることを示す関数\texttt{do\_child()}を作る。if文において\texttt{fork()}が呼び出されると同時に、プロセスが親プロセスと子プロセスの二つに分岐して、
+もし現在子プロセスの状態(pid=0)ならif文の中身を実行して、そうでないなら下のfor文において親プロセスを実行して最後に\texttt{waitpid()}で子プロセスの終了を待つ、という動きである。\\
+ただ、実際に実行してみると何度やっても先に親プロセスのみが実行されていたので、\texttt{fork()}が呼び出されたときには親プロセスの方が優先的に呼び出されるようになっているのだと考えられる。\\
+\textbf{(2)}
+
+
+\end{document}
