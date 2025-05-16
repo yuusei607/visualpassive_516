@@ -137,7 +137,7 @@ while True:
 
     image_height_in_mm = 500
     k2 = image_height_in_mm / image_height
-    pts1_in_mm = (1.8/R) * k2 * np.float32([
+    pts1_in_mm = (size/R) * k2 * np.float32([
         [-image_width/2, -image_height/2],
         [image_width/2, -image_height/2],
         [-image_width/2, image_height/2],
