@@ -69,7 +69,7 @@ def new_point_with_retinal_image_invariance(u, v, X, Y, d):
         return u, v
     else:
         cos = d/L
-        sin = math.sqrt(X*X+Y*X)/L
+        sin = math.sqrt(X*X+Y*Y)/L
         cos_ = 1-cos
         n1 = -d*Y/r
         n2 = d*X/r
