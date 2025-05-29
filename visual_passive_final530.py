@@ -150,8 +150,8 @@ alpha_bad = 0.04
 gaze_avg = None  # 初期値
 size = 1.0
 #縦横比
-ratio_h = 0.6
-ratio_w = 0.4
+ratio_h = 0.32
+ratio_w = 0.28
 # ------------------ メインループ ------------------
 while True:
     # now = time.time()
